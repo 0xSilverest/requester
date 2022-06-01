@@ -1,12 +1,10 @@
 package com.github.silverest.requester
 
-import com.github.silverest.requester._
-import com.github.silverest.requester.enums._
+import com.github.silverest.requester.*
+import com.github.silverest.requester.enums.*
 import sttp.client3.*
 import sttp.client3.circe.*
 import sttp.model.Uri.Segment
-import zio.*
-import zio.ZIO.debug
 
 import java.lang.System.currentTimeMillis
 
@@ -24,42 +22,47 @@ case class Requester(endpoint: String):
     def maybeAuth(token: Option[String]) =
       token.fold(request)(t => request.auth.bearer(t))
 
-  def get(path: Path,
-          responseType: ResponseType = ResponseType.String,
-          token: Option[String] = None): Response[String] =
-    basicRequest.get(endpointUrl.addPathSegments(path.toSegment))
-      .maybeAuth(token)
-      .response(asStringAlways)
+  def get(path: Path, body: Option[String] = None,
+          token: Option[String] = None)
+          (responseType: ResponseType = ResponseType.String) = 
+    basicRequest
+      .get(endpointUrl.addPathSegments(path.toSegment))
+      .response(responseType.get)
       .send(backend)
 
-  def post(path: Path, body: String): Response[String]  =
+  def post(path: Path, body: Option[String] = None,
+           token: Option[String] = None)
+          (responseType: ResponseType = ResponseType.String) =
     basicRequest
       .post(endpointUrl.addPathSegments(path.toSegment))
-      .contentType("application/json")
-      .body(body)
-      .response(asStringAlways)
+      .response(responseType.get)
       .send(backend)
 
-  def put(path: Path, body: String): Response[String] =
+  def put(path: Path, body: Option[String] = None)
+         (responseType: ResponseType = ResponseType.String) =
     basicRequest
       .put(endpointUrl.addPathSegments(path.toSegment))
-      .body(body)
-      .response(asStringAlways)
+      .response(responseType.get)
       .send(backend)
 
-  def delete(path: Path): Response[String]  =
+  def patch(path: Path, body: Option[String] = None)
+         (responseType: ResponseType = ResponseType.String) =
+    basicRequest
+      .patch(endpointUrl.addPathSegments(path.toSegment))
+      .response(responseType.get)
+      .send(backend)
+
+  def delete(path: Path, body: Option[String] = None)
+            (responseType: ResponseType = ResponseType.String) = 
     basicRequest
       .delete(endpointUrl.addPathSegments(path.toSegment))
-      .response(asStringAlways)
+      .response(responseType.get)
       .send(backend)
 
-  def close: URIO[Any, Unit] =
-    ZIO.succeed(backend.close()).debug("Closing backend")
-
-  def defineRequest(requestType: RequestType, endpoint: String, body: String = ""): Object =
+  def defineRequest(requestType: RequestType, endpoint: String, body: Option[String] = None) =
     import RequestType._
     requestType match
-      case Get => this.get(endpoint)
+      case Get => this.get(endpoint, body)
       case Post => this.post(endpoint, body)
       case Put => this.put(endpoint, body)
-      case Delete => this.delete(endpoint)
+      case Delete => this.delete(endpoint, body)

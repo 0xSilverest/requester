@@ -7,7 +7,7 @@ enum ResponseType:
   case Json
   case String
 
-  def apply(): ResponseAs[Serializable, Any] =
+  def get: ResponseAs[Serializable, Any] =
     this match
       case Json => asJson[String]
       case String => asStringAlways

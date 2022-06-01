@@ -1,54 +1,61 @@
-link: http://mmcall-back-ALB-878794251.eu-west-3.elb.amazonaws.com
+link: localhost:8080
 loginEndpoint: /api/auth/login
 endpoints:
-  - name: allClient
-    path: /api/coordinators/admin/allClient
-    type: Auth
-  
-  - name: addClient
-    path: /api/coordinators/admin/addClient
-    type: Auth
+  # Not added yet to the goals just an idea
+  endpointShortcut:
+    path: /api/coordinators
 
-  - name: languages
+  allClient:
+    # Not added yet to the goals just an idea
+    shortcut: endpointShortcut
+    path: /admin/allClient
+    auth: true
+  # Should translate to /api/coordinators/admin/allClient
+  
+  addClient:
+    path: /api/coordinators/admin/addClient
+    auth: true
+
+  languages:
     path: /api/sites/languages
-    type: NoAuth
+    auth: false
 
 login:
   parameters:
-    - username: username
-    - password: password
+    username: username
+    password: password
     # any other variables to be included within the json request
   responseType: json
-  token: token # key-name inside the json
+  key: token # key-name inside the json
 
 actions:
-  - name: endpointName1
+  endpointName1:
     bodyType: json 
     body: ./file.json
     
-  - name: endpointName2
+  endpointName2:
     bodyType: json 
     body:
-      - param1: value
-      - param2: value
+      param1: value
+      param2: value
 
-  - name: endpointName3
+  endpointName3:
     bodyType: binary
-    file: ./filename # path from directory you're in or absolute path starting with /
+    body: ./filename # path from directory you're in or absolute path starting with /
 
-  - name: endpointName4
+  endpointName4:
     bodyType: json@User
     # if no body passed it will auto generate a random user
     # else it will validate your model before passing it
     
 models:
-  - name: User
+  User:
     parameters:
-      - username: String
-      - password: String
-      - role: Admin | Client | Operator # Basically takes one of the three
-      - email: String@regex:email # Email regex predefined
+      username: String
+      password: String
+      role: Admin | Client | Operator # Basically takes one of the three
+      email: String@regex:email # Email regex predefined
 
 regex:
-  - customeId: "[0-9]{2}[a-zA-Z]"
+  customeId: "[0-9]{2}[a-zA-Z]"
 
