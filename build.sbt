@@ -1,6 +1,6 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
-ThisBuild / scalaVersion := "3.1.2"
+ThisBuild / scalaVersion := "3.2.2"
 
 val sttpV = "3.5.1"
 val circeV = "0.14.1"
@@ -20,10 +20,6 @@ lazy val root = (project in file("."))
     ),
 
     libraryDependencies ++= Seq(
-        "org.typelevel" %% "cats-parse" % catsParseV,
-        "org.typelevel" %% "cats-core" % catsV,
-        "org.typelevel" %% "cats-effect" % catsEffectV,
-
         "dev.optics" %% "monocle-core" % monocleV,
 
         "com.softwaremill.sttp.client3" %% "core" % sttpV,
@@ -33,9 +29,8 @@ lazy val root = (project in file("."))
         "io.circe" %% "circe-core" % circeV,
         "io.circe" %% "circe-generic" % circeV,
         "io.circe" %% "circe-parser" % circeV,
-        "io.circe" %% "circe-yaml" % circeV,
 
-        "org.typelevel" %% "log4cats-slf4j"   % log4catsV,
+        "org.yaml" % "snakeyaml" % "2.0",
 
         "org.scalacheck" %% "scalacheck" % "1.16.0" % "test",
         "org.scalatest" %% "scalatest" % "3.2.11" % "test"

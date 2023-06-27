@@ -24,7 +24,7 @@ case class Requester(endpoint: String):
 
   def get(path: Path, body: Option[String] = None,
           token: Option[String] = None)
-          (responseType: ResponseType = ResponseType.String) = 
+          (responseType: ResponseType = ResponseType.STRING) = 
     basicRequest
       .get(endpointUrl.addPathSegments(path.toSegment))
       .response(responseType.get)
@@ -32,28 +32,28 @@ case class Requester(endpoint: String):
 
   def post(path: Path, body: Option[String] = None,
            token: Option[String] = None)
-          (responseType: ResponseType = ResponseType.String) =
+          (responseType: ResponseType = ResponseType.STRING) =
     basicRequest
       .post(endpointUrl.addPathSegments(path.toSegment))
       .response(responseType.get)
       .send(backend)
 
   def put(path: Path, body: Option[String] = None)
-         (responseType: ResponseType = ResponseType.String) =
+         (responseType: ResponseType = ResponseType.STRING) =
     basicRequest
       .put(endpointUrl.addPathSegments(path.toSegment))
       .response(responseType.get)
       .send(backend)
 
   def patch(path: Path, body: Option[String] = None)
-         (responseType: ResponseType = ResponseType.String) =
+         (responseType: ResponseType = ResponseType.STRING) =
     basicRequest
       .patch(endpointUrl.addPathSegments(path.toSegment))
       .response(responseType.get)
       .send(backend)
 
   def delete(path: Path, body: Option[String] = None)
-            (responseType: ResponseType = ResponseType.String) = 
+            (responseType: ResponseType = ResponseType.STRING) = 
     basicRequest
       .delete(endpointUrl.addPathSegments(path.toSegment))
       .response(responseType.get)

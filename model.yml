@@ -1,26 +1,16 @@
 link: localhost:8080
-loginEndpoint: /api/auth/login
+
 endpoints:
-  # Not added yet to the goals just an idea
-  endpointShortcut:
-    path: /api/coordinators
-
-  allClient:
-    # Not added yet to the goals just an idea
-    shortcut: endpointShortcut
-    path: /admin/allClient
+  endPoint1:
+    path: /api/endPoint1
     auth: true
-  # Should translate to /api/coordinators/admin/allClient
   
-  addClient:
-    path: /api/coordinators/admin/addClient
+  endPoint2:
+    path: /api/endPoint2
     auth: true
-
-  languages:
-    path: /api/sites/languages
-    auth: false
 
 login:
+  endpoint: /api/login
   parameters:
     username: username
     password: password
@@ -29,33 +19,36 @@ login:
   key: token # key-name inside the json
 
 actions:
-  endpointName1:
+  action1:
+    endpoint: endPoint1
     bodyType: json 
     body: ./file.json
-    
-  endpointName2:
+
+  action2:
+    endpoint: endPoint2
     bodyType: json 
     body:
       param1: value
       param2: value
 
-  endpointName3:
+  action3:
+    endpoint: endPoint3
     bodyType: binary
     body: ./filename # path from directory you're in or absolute path starting with /
 
-  endpointName4:
+  action4:
+    endpoint: endPoint4
     bodyType: json@User
     # if no body passed it will auto generate a random user
     # else it will validate your model before passing it
     
 models:
   User:
-    parameters:
-      username: String
-      password: String
-      role: Admin | Client | Operator # Basically takes one of the three
-      email: String@regex:email # Email regex predefined
+    username: String
+    password: String
+    role: Admin | Client | Operator # Basically takes one of the three
+    email: String@regex:email # Email regex predefined
 
 regex:
-  customeId: "[0-9]{2}[a-zA-Z]"
+  customId: "[0-9]{2}[a-zA-Z]"
 
