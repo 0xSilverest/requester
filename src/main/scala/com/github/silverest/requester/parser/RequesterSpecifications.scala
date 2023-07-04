@@ -1,8 +1,8 @@
-package com.github.silverest.requester.dsl
+package com.github.silverest.requester.parser
 
 import com.github.silverest.requester.*
 import com.github.silverest.requester.enums.*
-import com.github.silverest.requester.dsl.YamlWrapper.*
+import com.github.silverest.requester.parser.YamlWrapper.*
 import scala.jdk.CollectionConverters.*
 import monocle.Iso
 
@@ -20,9 +20,9 @@ object RequesterSpecifications:
 
   case class Login(path: Seq[String], parameters: Map[String, String], responseType: ResponseType, key: Option[String]) extends RequesterSpec
 
-  case class Action(endpointName: String, bodyType: BodyType, body: Option[String | Map[String, String]]) extends RequesterSpec
+  case class Action(name: String, endpointName: String, bodyType: BodyType, body: Option[String | Map[String, String]]) extends RequesterSpec
 
-  case class Model(name: String, parameters: Map[String, Object]) extends RequesterSpec
+  case class Model(name: String, fields: Map[String, Object]) extends RequesterSpec
 
   case class Regex(name: String, pattern: String) extends RequesterSpec
 
@@ -83,14 +83,22 @@ object RequesterSpecifications:
             case Some(str: String) => Some(str)
             case Some(map: JavaMap[String]) => Some(map.asScala.toMap)
             case None => None
-        Action(endpointName, bodyType, body)
+        Action(actionName, endpointName, bodyType, body)
 
   object Model:
     given YamlDecoder[Model] with
       def decode(yamlMap: Map[String, Object]): Model =
         val name = yamlMap.keys.head
-        val parameters = yamlMap(name).asInstanceOf[JavaMap[Object]].asScala.toMap
-        Model(name, parameters)
+        val fields =
+          yamlMap(name).asInstanceOf[JavaMap[Object]]
+            .asScala.toMap
+            .map { case (key, value) => (key, FieldType.fromString(value.asInstanceOf[String])) }
+            .map { case (key, value) => (key, value match
+              case Right(ft) => ft
+              case Left(error) => throw new Exception(error)
+            ) }
+
+        Model(name, fields)
 
   object Regex:
     given YamlDecoder[Regex] with
